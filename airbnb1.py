@@ -7,7 +7,7 @@ from streamlit_folium import st_folium
 st.title('İstanbul Airbnb')
 
 # Veri yükleme
-temiz_veri2 = pd.read_csv(r"C:\Users\recep\Desktop\VERİ BİLİMİ\temiz_veri2.csv")
+temiz_veri2 = pd.read_csv(r"https://raw.githubusercontent.com/recepgltr/Istanbul-Airbnb-Veri-Analizi/main/temiz_veri2.csv")
 
 # İlçelerin listesi (baş harflerine göre sıralanmış)
 neighbourhoods = [
