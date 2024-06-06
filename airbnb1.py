@@ -67,7 +67,7 @@ else:
                 <h4>{row['name']}</h4>
                 <p><b>Oda Türü:</b> {row['room_type']}</p>
                 <p><b>Fiyat:</b> ${row['price']} / gece</p>
-                <p><a href="https://www.airbnb.com/rooms/{row['id']}" target="_blank">Daha fazla bilgi için tıklayın</a></p>
+                <p><a href="https://www.airbnb.com" target="_blank">Daha fazla bilgi için tıklayın</a></p>
             </div>
         """
         iframe = folium.IFrame(html=popup_html, width=300, height=200)
