@@ -2,4 +2,4 @@ streamlit==1.26.0
 streamlit
 pandas
 folium
-st_folium
+
