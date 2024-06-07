@@ -67,7 +67,7 @@ else:
                 <h4>{row['name']}</h4>
                 <p><b>Oda Türü:</b> {row['room_type']}</p>
                 <p><b>Fiyat:</b> ${row['price']} / gece</p>
-                <p><a href="https://www.airbnb.com" target="_blank">Daha fazla bilgi için tıklayın</a></p>
+                <p><a href="https://www.airbnb.com.tr/s/Istanbul--Turkey/homes?tab_id=home_tab&refinement_paths%5B%5D=%2Fhomes&flexible_trip_lengths%5B%5D=one_week&monthly_start_date=2024-07-01&monthly_length=3&monthly_end_date=2024-10-01&price_filter_input_type=2&channel=EXPLORE&query=Istanbul%2C%20Turkey&place_id=ChIJawhoAASnyhQR0LABvJj-zOE&location_bb=QiTMBUHrbjFCIz7hQeTDsg%3D%3D&date_picker_type=calendar&source=structured_search_input_header&search_type=autocomplete_click" target="_blank">Daha fazla bilgi için tıklayın</a></p>
             </div>
         """
         iframe = folium.IFrame(html=popup_html, width=300, height=200)
