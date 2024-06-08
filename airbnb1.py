@@ -98,4 +98,12 @@ else:
 
         # Haritayı gösterme
         st_folium(m, width=800, height=600)
+ortalama_fiyatlar = temiz_veri2.groupby('neighbourhood')['price'].mean().reset_index()
 
+# Sütun grafiği şeklinde göster
+ortalama_fiyatlar.plot(kind='bar', x='neighbourhood', y='price', figsize=(12, 6), legend=None)
+plt.title('İlçelere Göre Ortalama Fiyatlar')
+plt.xlabel('İlçe')
+plt.ylabel('Ortalama Fiyat (TL)')
+plt.xticks(rotation=90)
+plt.show()
