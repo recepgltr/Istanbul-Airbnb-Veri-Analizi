@@ -7,7 +7,7 @@ from datetime import datetime
 
 st.title('İstanbul Airbnb')
 
-# Veri yükleme
+# Veri yüklem
 temiz_veri2 = pd.read_csv(r"https://raw.githubusercontent.com/recepgltr/Istanbul-Airbnb-Veri-Analizi/main/temiz_veri2.csv")
 
 # İlçelerin listesi
