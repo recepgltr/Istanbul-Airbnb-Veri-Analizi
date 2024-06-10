@@ -159,7 +159,7 @@ past_prices = filtered_data['price']
 price_increase_percentage = ((future_prices - past_prices) / past_prices) * 100
 
 # Tahmin edilen fiyatları ve fiyat artış yüzdesini veriye ekleme
-
+filtered_data['previous_year_price'] = past_prices
 filtered_data['predicted_price_next_year'] = future_prices
 filtered_data['price_increase_percentage'] = price_increase_percentage
 
