@@ -4,3 +4,4 @@ pandas
 folium
 streamlit_folium 
 joblib
+sklearn.model_selection
