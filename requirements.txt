@@ -5,8 +5,3 @@ folium
 streamlit_folium 
 joblib
 scikit-learn
-train_test_split
-sklearn.linear_model
-LinearRegression
-sklearn.metrics
-mean_absolute_error
