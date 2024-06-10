@@ -8,7 +8,7 @@ import joblib
 from sklearn.linear_model import LinearRegression
 
 # Veri yükleme
-temiz_veri2 = pd.read_csv("C:/Users/recep/Desktop/VERİ BİLİMİ/deneme1.csv")
+temiz_veri2 = pd.read_csv("https://raw.githubusercontent.com/recepgltr/Istanbul-Airbnb-Veri-Analizi/main/deneme1.csv
 
 # Ayrık değerleri çıkarma
 Q1 = temiz_veri2['price'].quantile(0.25)
