@@ -7,3 +7,4 @@ joblib
 sklearn.model_selection
 train_test_split
 sklearn.linear_model
+LinearRegression
