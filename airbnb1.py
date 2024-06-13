@@ -20,19 +20,8 @@ upper_bound = Q3 + 1.5 * IQR
 
 temiz_veri2 = temiz_veri2[(temiz_veri2['price'] >= lower_bound) & (temiz_veri2['price'] <= upper_bound)]
 
-# Özellik ve hedef değişkenler
-X = temiz_veri2[['latitude', 'longitude', 'room_type', 'minimum_nights', 'availability_365']]
-y = temiz_veri2['price']
-
-# Kategorik verileri sayısal verilere dönüştürme
-X = pd.get_dummies(X, columns=['room_type'], drop_first=True)
-
-# Model oluşturma ve eğitme
-model = LinearRegression()
-model.fit(X, y)
-
-# Modeli kaydetme
-joblib.dump(model, 'airbnb_price_prediction_model.pkl')
+# Enflasyon oranını ekleme (örnek olarak %55 eklenmiştir)
+temiz_veri2['inflation_rate'] = 0.55  # %55 enflasyon oranı
 
 # Streamlit uygulaması
 st.title('İstanbul Airbnb')
@@ -114,12 +103,12 @@ else:
         st_folium(m, width=800, height=600)
 
         try:
-            model = joblib.load('airbnb_price_prediction_model.pkl')
+            model = joblib.load('airbnb_price_prediction_model_with_inflation.pkl')
         except FileNotFoundError:
             st.error("Model dosyası bulunamadı. Lütfen dosya yolunu kontrol edin.")
             st.stop()
 
-        X_new = filtered_data[['latitude', 'longitude', 'room_type', 'minimum_nights', 'availability_365']]
+        X_new = filtered_data[['latitude', 'longitude', 'room_type', 'minimum_nights', 'availability_365', 'inflation_rate']]
         X_new = pd.get_dummies(X_new, columns=['room_type'], drop_first=True)
         if X_new.empty:
             st.error("Filtreleme sonucunda tahmin yapılacak veri bulunamadı.")
@@ -129,12 +118,6 @@ else:
         if 'room_type_Shared room' not in X_new.columns:
             X_new['room_type_Shared room'] = 0
 
-        try:
-            model = joblib.load('airbnb_price_prediction_model.pkl')
-        except FileNotFoundError:
-            st.error("Model dosyası bulunamadı. Lütfen dosya yolunu kontrol edin.")
-            st.stop()
-        
         st.title('Gelecek Yılki Fiyat Tahmini')
         future_prices = model.predict(X_new)
         past_prices = filtered_data['price']
