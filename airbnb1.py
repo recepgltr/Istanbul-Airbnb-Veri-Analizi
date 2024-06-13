@@ -1,9 +1,4 @@
-import streamlit as st
 import pandas as pd
-import folium
-from folium import IFrame
-from streamlit_folium import st_folium
-from datetime import datetime
 import joblib
 from sklearn.linear_model import LinearRegression
 
@@ -20,8 +15,45 @@ upper_bound = Q3 + 1.5 * IQR
 
 temiz_veri2 = temiz_veri2[(temiz_veri2['price'] >= lower_bound) & (temiz_veri2['price'] <= upper_bound)]
 
-# Enflasyon oranını ekleme (örnek olarak %55 eklenmiştir)
-temiz_veri2['inflation_rate'] = 0.55  # %55 enflasyon oranı
+# Enflasyon oranını ekleme (örnek olarak %75 eklenmiştir)
+temiz_veri2['inflation_rate'] = 0.75  # %75 enflasyon oranı
+
+# Özellik ve hedef değişkenler
+X = temiz_veri2[['latitude', 'longitude', 'room_type', 'minimum_nights', 'availability_365', 'inflation_rate']]
+y = temiz_veri2['price']
+
+# Kategorik verileri sayısal verilere dönüştürme
+X = pd.get_dummies(X, columns=['room_type'], drop_first=True)
+
+# Model oluşturma ve eğitme
+model = LinearRegression()
+model.fit(X, y)
+
+# Modeli kaydetme
+joblib.dump(model, 'airbnb_price_prediction_model_with_inflation.pkl')
+import streamlit as st
+import pandas as pd
+import folium
+from folium import IFrame
+from streamlit_folium import st_folium
+from datetime import datetime
+import joblib
+
+# Veri yükleme
+temiz_veri2 = pd.read_csv("https://raw.githubusercontent.com/recepgltr/Istanbul-Airbnb-Veri-Analizi/main/deneme1.csv")
+
+# Ayrık değerleri çıkarma
+Q1 = temiz_veri2['price'].quantile(0.25)
+Q3 = temiz_veri2['price'].quantile(0.75)
+IQR = Q3 - Q1
+
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+temiz_veri2 = temiz_veri2[(temiz_veri2['price'] >= lower_bound) & (temiz_veri2['price'] <= upper_bound)]
+
+# Enflasyon oranını ekleme (örnek olarak %75 eklenmiştir)
+temiz_veri2['inflation_rate'] = 0.75  # %75 enflasyon oranı
 
 # Streamlit uygulaması
 st.title('İstanbul Airbnb')
@@ -118,13 +150,4 @@ else:
         if 'room_type_Shared room' not in X_new.columns:
             X_new['room_type_Shared room'] = 0
 
-        st.title('Gelecek Yılki Fiyat Tahmini')
-        future_prices = model.predict(X_new)
-        past_prices = filtered_data['price']
-        price_increase_percentage = ((future_prices - past_prices) / past_prices) * 100
-
-        filtered_data['previous_year_price'] = past_prices
-        filtered_data['predicted_price_next_year'] = future_prices
-        filtered_data['price_increase_percentage'] = price_increase_percentage
-
-        st.write(filtered_data[['name', 'latitude', 'longitude', 'price', 'previous_year_price', 'predicted_price_next_year', 'price_increase_percentage']])
+        st.title('G
