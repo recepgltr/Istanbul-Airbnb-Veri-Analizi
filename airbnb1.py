@@ -16,7 +16,7 @@ upper_bound = Q3 + 1.5 * IQR
 temiz_veri2 = temiz_veri2[(temiz_veri2['price'] >= lower_bound) & (temiz_veri2['price'] <= upper_bound)]
 
 # Enflasyon oranını ekleme (örnek olarak %126 eklenmiştir)
-temiz_veri2['inflation_rate'] = 1,26  # %126 enflasyon oranı
+temiz_veri2['inflation_rate'] = 1.26  # %126 enflasyon oranı
 
 # Özellik ve hedef değişkenler
 X = temiz_veri2[['latitude', 'longitude', 'room_type', 'minimum_nights', 'availability_365', 'inflation_rate']]
