@@ -40,6 +40,8 @@ from folium import IFrame
 from streamlit_folium import st_folium
 from datetime import datetime
 import joblib
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 
 # Veri yükleme
 temiz_veri2 = pd.read_csv("https://raw.githubusercontent.com/recepgltr/Istanbul-Airbnb-Veri-Analizi/main/deneme1.csv")
@@ -54,17 +56,34 @@ upper_bound = Q3 + 1.5 * IQR
 
 temiz_veri2 = temiz_veri2[(temiz_veri2['price'] >= lower_bound) & (temiz_veri2['price'] <= upper_bound)]
 
-# Enflasyon oranını ekleme
+# Enflasyon oranını ekleme (örnek olarak %126 eklenmiştir)
 temiz_veri2['inflation_rate'] = 1.26  # %126 enflasyon oranı
+
+# Özellik ve hedef değişkenler
+X = temiz_veri2[['latitude', 'longitude', 'room_type', 'minimum_nights', 'availability_365', 'inflation_rate']]
+y = temiz_veri2['price']
+
+# Kategorik verileri sayısal verilere dönüştürme
+X = pd.get_dummies(X, columns=['room_type'], drop_first=True)
+
+# Eğitim ve test verilerini ayırma
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Model oluşturma ve eğitme
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Modeli kaydetme
+joblib.dump(model, 'airbnb_price_prediction_model_with_inflation.pkl')
 
 # Streamlit uygulaması
 st.title('İstanbul Airbnb')
 neighbourhoods = [
-    "Adalar", "Arnavutkoy", "Atasehir", "Avcilar", "Bagcilar", "Bahcelievler", "Bakirkoy",
-    "Basaksehir", "Bayrampasa", "Besiktas", "Beykoz", "Beylikduzu", "Beyoglu", "Buyukcekmece",
-    "Catalca", "Cekmekoy", "Esenler", "Esenyurt", "Eyup", "Fatih", "Gaziosmanpasa", "Gungoren",
-    "Kadikoy", "Kagithane", "Kartal", "Kucukcekmece", "Maltepe", "Pendik", "Sancaktepe",
-    "Sariyer", "Silivri", "Sile", "Sisli", "Sultanbeyli", "Sultangazi", "Tuzla", "Umraniye",
+    "Adalar", "Arnavutkoy", "Atasehir", "Avcilar", "Bagcilar", "Bahcelievler", "Bakirkoy", 
+    "Basaksehir", "Bayrampasa", "Besiktas", "Beykoz", "Beylikduzu", "Beyoglu", "Buyukcekmece", 
+    "Catalca", "Cekmekoy", "Esenler", "Esenyurt", "Eyup", "Fatih", "Gaziosmanpasa", "Gungoren", 
+    "Kadikoy", "Kagithane", "Kartal", "Kucukcekmece", "Maltepe", "Pendik", "Sancaktepe", 
+    "Sariyer", "Silivri", "Sile", "Sisli", "Sultanbeyli", "Sultangazi", "Tuzla", "Umraniye", 
     "Uskudar", "Zeytinburnu"
 ]
 
@@ -101,7 +120,7 @@ else:
         filtered_data['total_price'] = filtered_data['price'] * num_days
 
         st.sidebar.write(f"Seçilen tarih aralığında toplam gün sayısı: {num_days}")
-
+  
         map_center = [filtered_data['latitude'].mean(), filtered_data['longitude'].mean()]
         m = folium.Map(location=map_center, zoom_start=12)
 
@@ -146,4 +165,19 @@ else:
         X_new = pd.get_dummies(X_new, columns=['room_type'], drop_first=True)
         if X_new.empty:
             st.error("Filtreleme sonucunda tahmin yapılacak veri bulunamadı.")
-            st
+            st.stop()
+        if 'room_type_Private room' not in X_new.columns:
+            X_new['room_type_Private room'] = 0
+        if 'room_type_Shared room' not in X_new.columns:
+            X_new['room_type_Shared room'] = 0
+
+        st.title('Gelecek Yılki Fiyat Tahmini')
+        future_prices = model.predict(X_new)
+        past_prices = filtered_data['price']
+        price_increase_percentage = ((future_prices - past_prices) / past_prices) * 100
+
+        filtered_data['previous_year_price'] = past_prices
+        filtered_data['predicted_price_next_year'] = future_prices
+        filtered_data['price_increase_percentage'] = price_increase_percentage
+
+        st.write(filtered_data[['name', 'latitude', 'longitude', 'price', 'previous_year_price', 'predicted_price_next_year', 'price_increase_percentage']])
