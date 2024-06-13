@@ -150,4 +150,13 @@ else:
         if 'room_type_Shared room' not in X_new.columns:
             X_new['room_type_Shared room'] = 0
 
-        st.title('G
+        st.title('Gelecek Yılki Fiyat Tahmini')
+        future_prices = model.predict(X_new)
+        past_prices = filtered_data['price']
+        price_increase_percentage = ((future_prices - past_prices) / past_prices) * 100
+
+        filtered_data['previous_year_price'] = past_prices
+        filtered_data['predicted_price_next_year'] = future_prices
+        filtered_data['price_increase_percentage'] = price_increase_percentage
+
+        st.write(filtered_data[['name', 'latitude', 'longitude', 'price', 'previous_year_price', 'predicted_price_next_year', 'price_increase_percentage']])
